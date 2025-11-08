@@ -1,4 +1,4 @@
-# Point Cloud Libarqry Filters
+# Point Cloud Library  Filters
 
 ## Voxel Grid Filter Node
 
@@ -28,6 +28,6 @@ The **VoxelGridNode** is a ROS 2 node that subscribes to a raw `sensor_msgs/Poin
 
 ### Example Debug Output
 ```
-[INFO] [1762536010.704324175] [voxel_grid_node]: Downsampled cloud: 307200 → 109536 points
+[INFO] [1762586008.093982142] [voxel_grid_node]: Downsampled cloud: 65536 → 39126 points (40.3% reduction)
 
 ```
