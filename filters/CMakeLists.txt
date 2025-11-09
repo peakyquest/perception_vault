@@ -56,11 +56,6 @@ ament_target_dependencies(outliers_filters
 target_link_libraries(outliers_filters ${PCL_LIBRARIES})
 install(TARGETS outliers_filters DESTINATION lib/${PROJECT_NAME})
 
-# === Install launch files ===
-install(
-  DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
-)
 
 ament_package()
 

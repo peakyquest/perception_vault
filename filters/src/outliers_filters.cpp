@@ -23,7 +23,7 @@ public:
 
     // Subscriber
     sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-      "/points/voxel_filter", rclcpp::SensorDataQoS(),
+      "/points/no_ground", rclcpp::SensorDataQoS(),
       std::bind(&OutliersFilters::pointcloud_callback, this, std::placeholders::_1));
 
     // Publishers

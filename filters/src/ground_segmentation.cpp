@@ -15,14 +15,14 @@ public:
   : Node("ground_segmentation")
   {
     // Parameters
-    this->declare_parameter<std::string>("input_topic", "/sensing/lidar/top/rectified/pointcloud");
+    this->declare_parameter<std::string>("input_topic", "/points/voxel_filter");
     this->declare_parameter<std::string>("output_topic", "/points/no_ground");
     this->declare_parameter<double>("ground_threshold", 0.2);
     this->declare_parameter<double>("radial_div_num", 60.0);
     this->declare_parameter<double>("concentric_div_num", 30.0);
     this->declare_parameter<double>("max_range", 50.0);
     this->declare_parameter<double>("min_range", 2.0);
-    this->declare_parameter<bool>("debug", true);
+    this->declare_parameter<bool>("debug", false);
 
     input_topic_ = this->get_parameter("input_topic").as_string();
     output_topic_ = this->get_parameter("output_topic").as_string();
