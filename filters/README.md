@@ -1,15 +1,16 @@
-# Point Cloud Library  Filters
+# Point Cloud Library Filters
 
 ## Voxel Grid Filter Node
 
-The **VoxelGridNode** is a ROS 2 node that subscribes to a raw `sensor_msgs/PointCloud2` topic and downsamples it using the **PCL VoxelGrid filter**. This process reduces the number of points in the cloud while maintaining the overall structure, improving computational efficiency for perception and mapping tasks.
+The **VoxelGridNode** is a ROS 2 node that subscribes to a raw `sensor_msgs/PointCloud2` topic and downsamples it using the **PCL VoxelGrid filter**.  
+This process reduces the number of points in the cloud while maintaining the overall structure, improving computational efficiency for perception and mapping tasks.
 
 ---
 
-### Inputs/Outputs
+### Inputs / Outputs
 
 | Type | Topic Name | Description |
-|------|-------------|--------------|
+|------|-------------|-------------|
 | **Input** | `/points/raw` | Incoming unfiltered point cloud data |
 | **Output** | `/points/voxel_filter` | Downsampled point cloud after applying voxel grid filter |
 
@@ -18,7 +19,7 @@ The **VoxelGridNode** is a ROS 2 node that subscribes to a raw `sensor_msgs/Poin
 ### Parameters
 
 | Parameter Name | Default Value | Description |
-|----------------|----------------|--------------|
+|----------------|----------------|-------------|
 | `leaf_size_x` | `0.1` | Size of each voxel leaf along the X-axis (in meters) |
 | `leaf_size_y` | `0.1` | Size of each voxel leaf along the Y-axis (in meters) |
 | `leaf_size_z` | `0.1` | Size of each voxel leaf along the Z-axis (in meters) |
@@ -26,8 +27,76 @@ The **VoxelGridNode** is a ROS 2 node that subscribes to a raw `sensor_msgs/Poin
 
 ---
 
-### Example Debug Output
-```
-[INFO] [1762586008.093982142] [voxel_grid_node]: Downsampled cloud: 65536 → 39126 points (40.3% reduction)
+### How It Works
 
-```
+- The node subscribes to a raw LiDAR or point cloud topic.  
+- The input point cloud is divided into **3D voxels (cubic regions)** defined by the `leaf_size_x`, `leaf_size_y`, and `leaf_size_z` parameters.  
+- All points within each voxel are replaced by their centroid, effectively **reducing the total number of points** while maintaining the geometric shape.  
+- The filtered point cloud is then published on `/points/voxel_filter`.  
+- If `debug=true`, the node prints the total number of input and output points to help tune the voxel size.
+
+---
+
+## Ground Segmentation Node
+
+The **GroundSegmentation** node is a ROS 2 node that subscribes to a raw `sensor_msgs/PointCloud2` topic and segments the ground points using a **radial grid-based height filter**.  
+Points above the local ground surface are extracted and published as a separate point cloud.  
+This process is useful for filtering out road or floor points in LiDAR data, improving perception and obstacle detection tasks.
+
+---
+
+### Inputs / Outputs
+
+| Type | Topic Name | Description |
+|------|-------------|-------------|
+| **Input** | `/sensing/lidar/top/rectified/pointcloud` | Incoming unfiltered LiDAR point cloud |
+| **Output** | `/points/no_ground` | Point cloud containing points above the ground |
+| **Debug Ground Points** | `/ground_points` | *(Optional, debug=true)* Point cloud of points classified as ground |
+| **Debug Non-Ground Points** | `/no_ground_points` | *(Optional, debug=true)* Point cloud of points above the ground |
+| **Grid Markers** | `/grid_markers` | *(Optional, debug=true)* Visualization markers showing radial/concentric grid |
+
+---
+
+### Parameters
+
+| Parameter Name | Default Value | Description |
+|----------------|---------------|-------------|
+| `ground_threshold` | `0.2` | Height threshold above local ground to classify a point as non-ground (meters) |
+| `radial_div_num` | `60` | Number of angular divisions in the radial grid |
+| `concentric_div_num` | `30` | Number of concentric rings in the radial grid |
+| `max_range` | `50.0` | Maximum distance to consider points for processing (meters) |
+| `min_range` | `2.0` | Minimum distance to ignore points (e.g., LiDAR mounting points, vehicle body) |
+| `debug` | `true` | When true, publishes debug point clouds and visualization markers |
+
+---
+
+### How It Works
+
+- The node subscribes to a LiDAR point cloud (`sensor_msgs/PointCloud2`).  
+- It constructs a **radial-concentric grid** around the sensor:  
+  - Radial divisions split the 360° space around the sensor.  
+  - Concentric divisions split the distance range from `min_range` to `max_range`.  
+- For each cell in the grid, the **minimum Z value** is recorded as the local ground height.  
+- Points higher than `ground_threshold` above the local ground height are classified as **non-ground**.  
+- Optionally, if `debug=true`, the node publishes:  
+  - Ground and non-ground point clouds separately.  
+  - Visualization markers for the radial grid in RViz.
+
+---
+
+### Visualization in RViz
+
+To visualize the results:
+
+- Add a **PointCloud2** display and subscribe to `/points/no_ground` to see the filtered points.  
+- If `debug=true`, add **PointCloud2** displays for `/ground_points` and `/no_ground_points`.  
+- Add a **MarkerArray** display and subscribe to `/grid_markers` to visualize the radial grid used for ground estimation.
+
+---
+
+### Notes
+
+- The `ground_threshold` parameter may need tuning based on sensor height, vehicle height, and terrain.  
+- The radial and concentric divisions affect the resolution of the ground grid — higher values increase accuracy but also computational cost.  
+- This node is designed for real-time segmentation of LiDAR point clouds in automotive or robotic applications.
+

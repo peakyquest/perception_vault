@@ -11,6 +11,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(visualization_msgs REQUIRED)
 find_package(pcl_conversions REQUIRED)
 find_package(PCL REQUIRED COMPONENTS common io filters)
 
@@ -40,6 +41,7 @@ ament_target_dependencies(ground_segmentation
   rclcpp 
   sensor_msgs 
   pcl_conversions
+  visualization_msgs
 )
 target_link_libraries(ground_segmentation ${PCL_LIBRARIES})
 install(TARGETS ground_segmentation DESTINATION lib/${PROJECT_NAME})
