@@ -161,3 +161,9 @@ This is useful for cleaning noisy point clouds after voxel filtering or ground s
 - Proper tuning of `mean_k` and `stddev_mul_thresh` ensures smooth visualization without losing important points.  
 - Designed for real-time LiDAR or depth sensor data in robotic and automotive applications.
 
+---
+
+PCL filters applied in sequence, illustrating how they collectively process a LiDAR dataset
+<img width="1725" height="808" alt="filters" src="https://github.com/user-attachments/assets/7b14746a-5d13-49d8-8e6f-40da0746b30f" />
+
+
