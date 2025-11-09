@@ -20,7 +20,7 @@ public:
     this->declare_parameter("leaf_size_x", 0.1);
     this->declare_parameter("leaf_size_y", 0.1);
     this->declare_parameter("leaf_size_z", 0.1);
-    this->declare_parameter("debug", true);
+    this->declare_parameter("debug", false);
 
     this->get_parameter("input_topic", input_topic_);
     this->get_parameter("output_topic", output_topic_);
