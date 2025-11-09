@@ -15,7 +15,7 @@ public:
   : Node("voxel_grid_node")
   {
     // Declare and get parameters
-    this->declare_parameter("input_topic", "/points/raw");
+    this->declare_parameter("input_topic", "/sensing/lidar/top/rectified/pointcloud");
     this->declare_parameter("output_topic", "/points/voxel_filter");
     this->declare_parameter("leaf_size_x", 0.1);
     this->declare_parameter("leaf_size_y", 0.1);

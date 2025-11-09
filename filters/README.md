@@ -19,7 +19,7 @@ This process reduces the number of points in the cloud while maintaining the ove
 ### Parameters
 
 | Parameter Name | Default Value | Description |
-|----------------|----------------|-------------|
+|----------------|---------------|-------------|
 | `leaf_size_x` | `0.1` | Size of each voxel leaf along the X-axis (in meters) |
 | `leaf_size_y` | `0.1` | Size of each voxel leaf along the Y-axis (in meters) |
 | `leaf_size_z` | `0.1` | Size of each voxel leaf along the Z-axis (in meters) |
@@ -86,8 +86,6 @@ This process is useful for filtering out road or floor points in LiDAR data, imp
 
 ### Visualization in RViz
 
-To visualize the results:
-
 - Add a **PointCloud2** display and subscribe to `/points/no_ground` to see the filtered points.  
 - If `debug=true`, add **PointCloud2** displays for `/ground_points` and `/no_ground_points`.  
 - Add a **MarkerArray** display and subscribe to `/grid_markers` to visualize the radial grid used for ground estimation.
@@ -99,4 +97,67 @@ To visualize the results:
 - The `ground_threshold` parameter may need tuning based on sensor height, vehicle height, and terrain.  
 - The radial and concentric divisions affect the resolution of the ground grid — higher values increase accuracy but also computational cost.  
 - This node is designed for real-time segmentation of LiDAR point clouds in automotive or robotic applications.
+
+---
+
+## Outliers Filter Node
+
+The **OutliersFilters** node is a ROS 2 node that removes **statistical outliers** from point clouds using the **PCL Statistical Outlier Removal (SOR) filter**.  
+This is useful for cleaning noisy point clouds after voxel filtering or ground segmentation.
+
+---
+
+### Inputs / Outputs
+
+| Type | Topic Name | Description |
+|------|------------|-------------|
+| **Input** | `/points/voxel_filter` | Incoming downsampled point cloud (from voxel filter) |
+| **Output** | `/points/inliers` | Filtered point cloud containing inlier points |
+| **Output (Debug)** | `/points/outliers` | Optional: cloud containing outlier points (published only if `debug=true`) |
+
+---
+
+### Parameters
+
+| Parameter Name | Default Value | Description |
+|----------------|---------------|-------------|
+| `mean_k` | `50` | Number of nearest neighbors analyzed for each point. Lower values improve performance. |
+| `stddev_mul_thresh` | `1.0` | Standard deviation multiplier threshold. Higher values keep more points, lower values remove more. |
+| `debug` | `false` | If true, publishes outlier cloud for debugging |
+
+---
+
+### How It Works
+
+- The node subscribes to a point cloud topic (usually the output of the voxel filter).  
+- For each point, it computes the mean distance to its `mean_k` nearest neighbors.  
+- Points farther than `stddev_mul_thresh` standard deviations from the mean are classified as **outliers**.  
+- The filtered inliers are published to `/points/inliers`.  
+- If `debug=true`, outliers are also published to `/points/outliers`.
+
+---
+
+### Recommended Settings for Smooth Visualization
+
+| Parameter | Suggested Value | Notes |
+|-----------|----------------|-------|
+| `mean_k` | 30 | Reduces computation for smoother real-time visualization |
+| `stddev_mul_thresh` | 1.5–2.0 | Keeps the inlier cloud dense and visually smooth |
+| `debug` | false | Disable outlier publishing to improve performance |
+
+---
+
+### Visualization in RViz
+
+- Add a **PointCloud2** display and subscribe to `/points/inliers` for cleaned point clouds.  
+- If `debug=true`, add another **PointCloud2** display for `/points/outliers` to visualize removed points.  
+- Avoid publishing both inliers and outliers for large clouds at high frequencies to prevent lag.
+
+---
+
+### Notes
+
+- This node works best **after a voxel grid filter** to reduce the number of points.  
+- Proper tuning of `mean_k` and `stddev_mul_thresh` ensures smooth visualization without losing important points.  
+- Designed for real-time LiDAR or depth sensor data in robotic and automotive applications.
 
