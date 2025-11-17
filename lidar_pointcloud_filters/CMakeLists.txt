@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(filters)
+project(lidar_pointcloud_filters)
 
 # Compiler settings
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -56,6 +56,11 @@ ament_target_dependencies(outliers_filters
 target_link_libraries(outliers_filters ${PCL_LIBRARIES})
 install(TARGETS outliers_filters DESTINATION lib/${PROJECT_NAME})
 
+# Install launch files
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
 
 ament_package()
 

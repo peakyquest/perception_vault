@@ -27,7 +27,7 @@ public:
       std::bind(&OutliersFilters::pointcloud_callback, this, std::placeholders::_1));
 
     // Publishers
-    pub_inliers_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/points/inliers", 10);
+    pub_inliers_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/points/filtered", 10);
     if (debug_) {
       pub_outliers_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/points/outliers", 10);
     }
@@ -43,7 +43,7 @@ private:
     pcl::fromROSMsg(*msg, *cloud);
 
     if (cloud->empty()) {
-      RCLCPP_WARN(this->get_logger(), "Received empty point cloud.");
+      // RCLCPP_WARN(this->get_logger(), "Received empty point cloud.");
       return;
     }
 

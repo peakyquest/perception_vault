@@ -1,4 +1,6 @@
-# Point Cloud Library Filters
+# LiDAR Point Cloud Filters
+
+This package provides ROS 2 nodes for filtering and processing LiDAR point cloud data using PCL (Point Cloud Library) filters. The package includes three main filtering nodes that can be used individually or together in a processing pipeline.
 
 ## Voxel Grid Filter Node
 
@@ -160,6 +162,159 @@ This is useful for cleaning noisy point clouds after voxel filtering or ground s
 - This node works best **after a voxel grid filter** to reduce the number of points.  
 - Proper tuning of `mean_k` and `stddev_mul_thresh` ensures smooth visualization without losing important points.  
 - Designed for real-time LiDAR or depth sensor data in robotic and automotive applications.
+
+---
+
+## Launch File: `pcl_filters.launch.py`
+
+The launch file provides a convenient way to launch all three filter nodes simultaneously with configurable parameters. It sets up a complete point cloud processing pipeline that chains the filters together: **Voxel Grid Filter → Ground Segmentation → Outliers Filter**.
+
+### Launch File Overview
+
+The launch file (`launch/pcl_filters.launch.py`) launches three nodes in sequence:
+
+1. **Voxel Grid Node** - Downsamples the input point cloud
+2. **Ground Segmentation Node** - Removes ground points (subscribes to voxel filter output)
+3. **Outliers Filter Node** - Removes statistical outliers (subscribes to voxel filter output)
+
+### Launch Arguments
+
+The launch file accepts the following arguments, organized by node:
+
+#### Global Arguments
+
+| Argument | Default Value | Description |
+|----------|---------------|-------------|
+| `use_sim_time` | `true` | Enable/disable simulation time for all nodes |
+
+#### Voxel Grid Filter Arguments
+
+| Argument | Default Value | Description |
+|----------|---------------|-------------|
+| `voxel_input_topic` | `/cx/lslidar_point_cloud` | Input topic for voxel grid filter |
+| `voxel_output_topic` | `/points/voxel_filter` | Output topic for voxel grid filter |
+| `leaf_size_x` | `0.1` | Voxel leaf size along X-axis (meters) |
+| `leaf_size_y` | `0.1` | Voxel leaf size along Y-axis (meters) |
+| `leaf_size_z` | `0.1` | Voxel leaf size along Z-axis (meters) |
+| `voxel_debug` | `false` | Enable debug output for voxel grid node |
+
+#### Ground Segmentation Arguments
+
+| Argument | Default Value | Description |
+|----------|---------------|-------------|
+| `ground_input_topic` | `/points/voxel_filter` | Input topic (typically voxel filter output) |
+| `ground_output_topic` | `/points/no_ground` | Output topic for non-ground points |
+| `ground_threshold` | `0.2` | Height threshold above ground (meters) |
+| `radial_div_num` | `60.0` | Number of angular divisions in radial grid |
+| `concentric_div_num` | `30.0` | Number of concentric rings |
+| `max_range` | `50.0` | Maximum processing range (meters) |
+| `min_range` | `2.0` | Minimum processing range (meters) |
+| `ground_debug` | `false` | Enable debug outputs (ground points, markers) |
+
+#### Outliers Filter Arguments
+
+| Argument | Default Value | Description |
+|----------|---------------|-------------|
+| `outliers_mean_k` | `20` | Number of nearest neighbors for outlier detection |
+| `outliers_stddev` | `1.5` | Standard deviation multiplier threshold |
+| `outliers_debug` | `false` | Enable outlier point cloud publishing |
+
+### How to Launch
+
+#### Basic Launch (Default Parameters)
+
+```bash
+ros2 launch lidar_pointcloud_filters pcl_filters.launch.py
+```
+
+This launches all three nodes with default parameters. The pipeline will:
+- Subscribe to `/cx/lslidar_point_cloud` (voxel input)
+- Publish filtered output to `/points/voxel_filter` (voxel output)
+- Publish ground-segmented output to `/points/no_ground` (ground output)
+
+#### Custom Input Topic
+
+To change the input topic for the voxel filter:
+
+```bash
+ros2 launch lidar_pointcloud_filters pcl_filters.launch.py \
+    voxel_input_topic:=/your/lidar/topic
+```
+
+#### Custom Voxel Size
+
+To adjust voxel grid resolution:
+
+```bash
+ros2 launch lidar_pointcloud_filters pcl_filters.launch.py \
+    leaf_size_x:=0.05 \
+    leaf_size_y:=0.05 \
+    leaf_size_z:=0.05
+```
+
+#### Enable Debug Outputs
+
+To enable debug outputs for all nodes:
+
+```bash
+ros2 launch lidar_pointcloud_filters pcl_filters.launch.py \
+    voxel_debug:=true \
+    ground_debug:=true \
+    outliers_debug:=true
+```
+
+#### Complete Custom Configuration
+
+Example with multiple custom parameters:
+
+```bash
+ros2 launch lidar_pointcloud_filters pcl_filters.launch.py \
+    voxel_input_topic:=/sensing/lidar/top/rectified/pointcloud \
+    leaf_size_x:=0.08 \
+    leaf_size_y:=0.08 \
+    leaf_size_z:=0.08 \
+    ground_threshold:=0.15 \
+    max_range:=60.0 \
+    min_range:=1.5 \
+    outliers_mean_k:=30 \
+    outliers_stddev:=2.0 \
+    use_sim_time:=false
+```
+
+### Topic Flow
+
+The default topic flow in the launch file is:
+
+```
+/cx/lslidar_point_cloud (input)
+    ↓
+[voxel_grid_node]
+    ↓
+/points/voxel_filter
+    ↓
+[ground_segmentation] → /points/no_ground
+    ↓
+[outliers_filters] → /points/inliers
+```
+
+**Note:** The ground segmentation and outliers filter both subscribe to `/points/voxel_filter` by default, but you can configure them to subscribe to different topics if needed.
+
+### Pipeline Configuration Tips
+
+1. **Voxel Grid First**: Always run voxel grid filtering first to reduce point count before ground segmentation and outlier removal.
+
+2. **Topic Chaining**: The default configuration chains topics automatically:
+   - Voxel output → Ground input
+   - Voxel output → Outliers input (if configured)
+
+3. **Performance Tuning**: 
+   - Start with larger voxel sizes (0.1m) for faster processing
+   - Reduce voxel size for higher detail (0.05m or smaller)
+   - Adjust `outliers_mean_k` based on point density after voxel filtering
+
+4. **Debug Mode**: Enable debug outputs (`*_debug:=true`) to visualize intermediate results in RViz, but disable in production for better performance.
+
+5. **Simulation Time**: Set `use_sim_time:=false` when working with real sensor data.
 
 ---
 

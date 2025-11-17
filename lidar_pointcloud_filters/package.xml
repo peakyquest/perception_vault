@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>filters</name>
+  <name>lidar_pointcloud_filters</name>
   <version>1.0.0</version>
   <description>Implementation of PCL-based filtering techniques for ROS 2.</description>
 

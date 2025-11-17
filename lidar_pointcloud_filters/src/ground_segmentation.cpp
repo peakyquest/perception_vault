@@ -58,7 +58,12 @@ private:
     pcl::fromROSMsg(*msg, *cloud);
 
     if (cloud->empty()) {
-      RCLCPP_WARN(this->get_logger(), "Received empty cloud!");
+      RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                          "Received empty cloud! Publishing empty output.");
+      // Publish empty cloud to maintain pipeline
+      sensor_msgs::msg::PointCloud2 empty_msg;
+      empty_msg.header = msg->header;
+      pub_->publish(empty_msg);
       return;
     }
 
@@ -122,11 +127,17 @@ private:
       }
     }
 
-    // Publish processed data
+    // Publish processed data (even if empty to maintain pipeline)
     sensor_msgs::msg::PointCloud2 output;
     pcl::toROSMsg(*cloud_no_ground, output);
     output.header = msg->header;
     pub_->publish(output);
+    
+    // Warn if all points were filtered out
+    if (cloud_no_ground->empty() && !cloud->empty()) {
+      RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                          "All points filtered out! Input had %zu points.", cloud->size());
+    }
 
     if (debug_) {
       // Publish ground/non-ground clouds

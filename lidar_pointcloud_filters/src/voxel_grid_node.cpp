@@ -53,9 +53,12 @@ private:
     pcl::fromROSMsg(*msg, *cloud);
 
     if (cloud->empty()) {
-      if (debug_) {
-        RCLCPP_WARN(this->get_logger(), "Received empty point cloud — skipping voxel filter.");
-      }
+      RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 5000,
+                          "Received empty point cloud. Publishing empty output.");
+      // Publish empty cloud to maintain pipeline
+      sensor_msgs::msg::PointCloud2 empty_msg;
+      empty_msg.header = msg->header;
+      pub_->publish(empty_msg);
       return;
     }
 
