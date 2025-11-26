@@ -2,8 +2,7 @@
 
 ## NavSat Pose Localizer Node
 
-The `NavSatPoseLocalizer` node is a ROS 2 node that converts GNSS data (`sensor_msgs/msg/NavSatFix`) into a localized odometry message (`nav_msgs/msg/Odometry`).  
-This node enables robots to use GPS latitude/longitude/altitude as a position source within a local reference frame. It is intended for navigation systems that require odometry-style positioning sourced from GNSS measurements. The node supports configuration of input/output topics, reference frame selection, altitude usage, and future extensions for attitude-based orientation estimation.
+The `NavSatPoseLocalizer` node is a ROS 2 node that converts GNSS data (`sensor_msgs/msg/NavSatFix`) into a localized odometry message (`nav_msgs/msg/Odometry`). This node enables robots to use GPS latitude/longitude/altitude as a position source within a local reference frame. It is intended for navigation systems that require odometry-style positioning sourced from GNSS measurements. The node supports configuration of input/output topics, reference frame selection, altitude usage, and future extensions for attitude-based orientation estimation.
 
 ---
 
@@ -46,7 +45,7 @@ This node enables robots to use GPS latitude/longitude/altitude as a position so
 
 - Add an **Odometry** display in RViz.
 - Set the topic to `/gps/odom` (or your configured topic).
-- Ensure the `frame_id` matches your global frame (e.g., `map`).
+- Ensure the `frame_id` matches your global frame (e.g., `odom`).
 - You will see the odometry marker update whenever a new GPS Fix is processed.
 
 ---
