@@ -3,10 +3,7 @@
 ## NavSat Pose Localizer Node
 
 The `NavSatPoseLocalizer` node is a ROS 2 node that converts GNSS data (`sensor_msgs/msg/NavSatFix`) into a localized odometry message (`nav_msgs/msg/Odometry`).  
-This node enables robots to use GPS latitude/longitude/altitude as a position source within a local reference frame such as `map` or `world`.  
-It is intended for navigation systems that require odometry-style positioning sourced from GNSS measurements.
-
-The node supports configuration of input/output topics, reference frame selection, altitude usage, and future extensions for attitude-based orientation estimation.
+This node enables robots to use GPS latitude/longitude/altitude as a position source within a local reference frame. It is intended for navigation systems that require odometry-style positioning sourced from GNSS measurements. The node supports configuration of input/output topics, reference frame selection, altitude usage, and future extensions for attitude-based orientation estimation.
 
 ---
 
@@ -38,8 +35,7 @@ The node supports configuration of input/output topics, reference frame selectio
 - The node loads configuration parameters such as the input GPS topic, odometry topic, local frame, reference coordinates, and projection mode.
 - The node subscribes to the GPS Fix topic (default: `/gps/fix`) and waits for incoming `sensor_msgs/msg/NavSatFix` data.
 - Once the first GPS Fix message is received, the node initializes or loads the origin used for local coordinate conversion.
-- Each incoming GPS Fix is converted into (x, y, z) coordinates using ENU or UTM projection relative to the reference origin.
-- If `use_altitude` is false, the altitude (z value) is set to zero.
+- Each incoming GPS Fix is converted into (x, y, z) coordinates using UTM projection relative to the reference origin.
 - Velocities are left as zero unless integrated or fused externally.
 - The odometry message is timestamped and published on the configured odometry topic.
 - Invalid GPS Fix data (no fix, poor quality, NaN fields) results in warnings and skipped publications.
@@ -64,17 +60,14 @@ The node supports configuration of input/output topics, reference frame selectio
   Orientation is currently identity. Attitude support is planned.
 
 - **Altitude**:  
-  Setting `use_altitude=false` forces a flat 2D output (z=0).
+  Flat 2D output (z=0).
 
-- **Projection Choice**:  
-  ENU is standard for robotics; UTM is available for geographic requirements.
 
 - **Dependencies**:  
   - `rclcpp`  
   - `sensor_msgs`  
   - `nav_msgs`  
   - `geometry_msgs`  
-  - Optionally GeographicLib for projections  
 
 ---
 
