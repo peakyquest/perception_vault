@@ -1,30 +1,40 @@
 cmake_minimum_required(VERSION 3.8)
 project(navsat_pose_localizer)
 
+# Default to C++17 if building C++ code
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
+###############################################################################
+# Dependencies
+###############################################################################
+
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(ament_cmake_python REQUIRED)
+find_package(rclpy REQUIRED)
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
-  set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
+###############################################################################
+# Python Package Installation
+###############################################################################
 
-# Install Python modules
+# Install Python package (makes modules importable)
 ament_python_install_package(${PROJECT_NAME})
+
+###############################################################################
+# Python Executables
+###############################################################################
+
+# Install navsat_pose_localizer_node executable
+install(PROGRAMS
+  ${PROJECT_NAME}/navsat_pose_node.py
+  DESTINATION lib/${PROJECT_NAME}
+  RENAME navsat_pose_localizer_node
+)
+
+###############################################################################
+# Launch Files
+###############################################################################
 
 # Install launch files
 install(DIRECTORY
@@ -32,13 +42,21 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
-find_package(rclpy REQUIRED)
+###############################################################################
+# Testing
+###############################################################################
 
-# Add Python node navsat_pose_localizer_node
-install(PROGRAMS
-  ${PROJECT_NAME}/navsat_pose_localizer_node.py
-  DESTINATION lib/${PROJECT_NAME}
-  RENAME navsat_pose_localizer_node
-)
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  # Skip copyright check (add copyright headers to source files when ready)
+  set(ament_cmake_copyright_FOUND TRUE)
+  # Skip cpplint (only works in git repo, add when ready)
+  set(ament_cmake_cpplint_FOUND TRUE)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+###############################################################################
+# Finalize
+###############################################################################
 
 ament_package()
