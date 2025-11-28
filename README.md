@@ -10,6 +10,9 @@ The **Camera RTSP Streamer** module enables streaming of video feeds from camera
 ### **2. LiDAR PointCloud Filters**  
 The **LiDAR PointCloud Filters** module provides a collection of **PCL (Point Cloud Library) filters** for ROS2. It supports preprocessing of LiDAR point clouds, including noise removal, downsampling, and segmentation, enhancing the quality and efficiency of perception algorithms.  
 
+### **3. Navsat Pose Localizer**  
+The **Navsat Pose Localizer** module provides a transformation layer that converts **GPS latitude/longitude** data into ROS2 **nav_msgs/Odometry** for use in higher-level localization, mapping, and navigation systems.
+
 
 ## **Third Party Packages**
 
