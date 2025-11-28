@@ -48,7 +48,7 @@ The `NavsatPoseLocalizer` node is a ROS 2 Python node that converts GNSS data (`
 
 - Add an **Odometry** display in RViz.
 - Set the topic to your configured odometry topic (default: `odom`).
-- Ensure the `odom_frame` matches your global frame (e.g., `odom` or `Car1`).
+- Ensure the `odom_frame` matches your global frame (e.g., `odom` or `map`).
 - You will see the odometry marker update whenever a new GPS Fix is processed.
 
 ---
