@@ -81,6 +81,12 @@ To visualize the clustering results:
    - Point Size: 2-4 pixels for better visibility
    - Marker Alpha: Adjust bounding box transparency as needed
    - Fixed Frame: Set to your LiDAR frame (e.g., `velodyne` or `lidar`)
+     
+- **Expected Visualization**
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5d75fe16-456c-457b-9d24-92eee5ef0ca5" width="600">
+</p>
+
 
 ---
 
