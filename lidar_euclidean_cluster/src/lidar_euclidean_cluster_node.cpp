@@ -69,14 +69,37 @@ private:
     {
       RCLCPP_WARN_THROTTLE(this->get_logger(), *this->get_clock(), 5000, 
                           "Received empty cloud!");
-      // Publish empty cloud and markers to maintain pipeline
+      // Publish empty cloud to maintain pipeline
       sensor_msgs::msg::PointCloud2 output;
       output.header = msg->header;
       pub_->publish(output);
+      
+      // Delete all existing markers
       if (publish_markers_ && marker_pub_)
       {
-        visualization_msgs::msg::MarkerArray empty_markers;
-        marker_pub_->publish(empty_markers);
+        visualization_msgs::msg::MarkerArray delete_markers;
+        for (int i = 1; i <= max_cluster_id_seen_; i++)
+        {
+          // Delete cluster center marker
+          visualization_msgs::msg::Marker center_marker;
+          center_marker.header.frame_id = msg->header.frame_id;
+          center_marker.header.stamp = msg->header.stamp;
+          center_marker.ns = "cluster_centers";
+          center_marker.id = i;
+          center_marker.action = visualization_msgs::msg::Marker::DELETE;
+          delete_markers.markers.push_back(center_marker);
+          
+          // Delete bounding box marker
+          visualization_msgs::msg::Marker bbox_marker;
+          bbox_marker.header.frame_id = msg->header.frame_id;
+          bbox_marker.header.stamp = msg->header.stamp;
+          bbox_marker.ns = "cluster_bboxes";
+          bbox_marker.id = i;
+          bbox_marker.action = visualization_msgs::msg::Marker::DELETE;
+          delete_markers.markers.push_back(bbox_marker);
+        }
+        marker_pub_->publish(delete_markers);
+        max_cluster_id_seen_ = 0;  // Reset since all markers are deleted
       }
       return;
     }
@@ -194,6 +217,9 @@ private:
       cluster_id++;
     }
 
+    // Track the maximum cluster ID used (cluster_id is incremented after use, so subtract 1)
+    int current_max_cluster_id = (cluster_id > 1) ? (cluster_id - 1) : 0;
+
     clustered_cloud->width = clustered_cloud->points.size();
     clustered_cloud->height = 1;
     clustered_cloud->is_dense = true;
@@ -207,6 +233,32 @@ private:
     // Publish visualization markers
     if (publish_markers_ && marker_pub_)
     {
+      
+      // Delete markers for clusters that no longer exist
+      for (int i = current_max_cluster_id + 1; i <= max_cluster_id_seen_; i++)
+      {
+        // Delete cluster center marker
+        visualization_msgs::msg::Marker center_marker;
+        center_marker.header.frame_id = msg->header.frame_id;
+        center_marker.header.stamp = msg->header.stamp;
+        center_marker.ns = "cluster_centers";
+        center_marker.id = i;
+        center_marker.action = visualization_msgs::msg::Marker::DELETE;
+        marker_array.markers.push_back(center_marker);
+        
+        // Delete bounding box marker
+        visualization_msgs::msg::Marker bbox_marker;
+        bbox_marker.header.frame_id = msg->header.frame_id;
+        bbox_marker.header.stamp = msg->header.stamp;
+        bbox_marker.ns = "cluster_bboxes";
+        bbox_marker.id = i;
+        bbox_marker.action = visualization_msgs::msg::Marker::DELETE;
+        marker_array.markers.push_back(bbox_marker);
+      }
+      
+      // Update maximum cluster ID seen
+      max_cluster_id_seen_ = current_max_cluster_id;
+      
       marker_pub_->publish(marker_array);
     }
 
@@ -232,6 +284,9 @@ private:
   std::string marker_topic_;
   bool publish_markers_;
   bool verbose_;
+  
+  // Track maximum cluster ID to delete old markers
+  int max_cluster_id_seen_ = 0;
 };
 
 int main(int argc, char * argv[])
