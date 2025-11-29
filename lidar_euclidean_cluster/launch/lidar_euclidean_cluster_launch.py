@@ -22,7 +22,7 @@ def generate_launch_description():
                 
                 # Visualization and debugging
                 'publish_markers': True,
-                'verbose': True,
+                'verbose_': False,
             }],
         ),
     ])
