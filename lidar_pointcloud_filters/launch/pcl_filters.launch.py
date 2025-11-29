@@ -37,13 +37,13 @@ def generate_launch_description():
         
         # Voxel grid arguments
         DeclareLaunchArgument('voxel_input_topic', 
-                             default_value='/cx/lslidar_point_cloud',
+                             default_value='/sensing/lidar/top/rectified/pointcloud',
                              description='Input topic for voxel grid filter'),
         DeclareLaunchArgument('voxel_output_topic', 
                              default_value='/points/voxel_filter',
                              description='Output topic for voxel grid filter'),
-        DeclareLaunchArgument('leaf_size_x', default_value='0.1', description='Voxel leaf size X (m)'),
-        DeclareLaunchArgument('leaf_size_y', default_value='0.1', description='Voxel leaf size Y (m)'),
+        DeclareLaunchArgument('leaf_size_x', default_value='0.2', description='Voxel leaf size X (m)'),
+        DeclareLaunchArgument('leaf_size_y', default_value='0.2', description='Voxel leaf size Y (m)'),
         DeclareLaunchArgument('leaf_size_z', default_value='0.1', description='Voxel leaf size Z (m)'),
         DeclareLaunchArgument('voxel_debug', default_value='false', description='Enable voxel grid debug output'),
         
@@ -56,9 +56,9 @@ def generate_launch_description():
                              description='Output topic for ground segmentation'),
         DeclareLaunchArgument('ground_threshold', default_value='0.2', description='Ground threshold (m)'),
         DeclareLaunchArgument('radial_div_num', default_value='60.0', description='Radial division number'),
-        DeclareLaunchArgument('concentric_div_num', default_value='30.0', description='Concentric division number'),
+        DeclareLaunchArgument('concentric_div_num', default_value='40.0', description='Concentric division number'),
         DeclareLaunchArgument('max_range', default_value='50.0', description='Maximum range (m)'),
-        DeclareLaunchArgument('min_range', default_value='2.0', description='Minimum range (m)'),
+        DeclareLaunchArgument('min_range', default_value='0.0', description='Minimum range (m)'),
         DeclareLaunchArgument('ground_debug', default_value='false', description='Enable ground segmentation debug output'),
         
         # Outliers filter arguments
