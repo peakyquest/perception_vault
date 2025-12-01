@@ -13,6 +13,9 @@ The **LiDAR PointCloud Filters** module provides a collection of **PCL (Point Cl
 ### **3. Navsat Pose Localizer**  
 The **Navsat Pose Localizer** module provides a transformation layer that converts **GPS latitude/longitude** data into ROS2 **nav_msgs/Odometry** for use in higher-level localization, mapping, and navigation systems.
 
+### **4. Lidar Euclidean Cluster**  
+The lidar_euclidean_cluster module uses PCL to perform Euclidean clustering on LiDAR point clouds, segmenting points into distinct object clusters
+
 
 ## **Third Party Packages**
 
