@@ -26,3 +26,4 @@ The [YOLO ROS2](https://github.com/mgonzs13/yolo_ros) package developed by **Mig
 This section provides curated ROS2 bag file links that can be used to test, validate, and benchmark the **Perception Vault** and **third party** modules under different real-world and simulated conditions. These bags support rapid experimentation without requiring live sensor hardware.
 
 - [Autoware ROS2 Bag Files](https://autowarefoundation.github.io/autoware-documentation/main/datasets/)
+- [KITTI Publisher ROS2](https://github.com/umtclskn/ros2_kitti_publishers)
