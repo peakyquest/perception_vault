@@ -22,6 +22,9 @@ The lidar_euclidean_cluster module uses PCL to perform Euclidean clustering on L
 ### **1. YOLO ROS2 Package**  
 The [YOLO ROS2](https://github.com/mgonzs13/yolo_ros) package developed by **Miguel González (mgonzs13)** provides ROS2 integration for YOLO object detection models ranging **from YOLOv8 to YOLOv12**. It supports real-time inference for robotics applications, offering fast and accurate detection that can be easily integrated into perception pipelines for drones, mobile robots, and autonomous systems.
 
+### **2. 3D LiDAR SLAM ROS2 Package**  
+The [lidarslam_ros2](https://github.com/rsasaki0109/lidarslam_ros2) package by **rsasaki0109** provides ROS 2 integration for 3D LiDAR-based SLAM, enabling real-time mapping and localization. It uses efficient scan-matching and graph-based optimization to build accurate 3D point-cloud maps and estimate robot pose, making it suitable for mobile robots, drones, and autonomous systems.
+
 ## **Bag Files (Dataset & Playback Support)** 
 This section provides curated ROS2 bag file links that can be used to test, validate, and benchmark the **Perception Vault** and **third party** modules under different real-world and simulated conditions. These bags support rapid experimentation without requiring live sensor hardware.
 
