@@ -1,4 +1,4 @@
-## ORB SLAM2 Wrapper Node
+## ORB SLAM2 Wrapper 
 
 `orb_slam2_wrapper` is a ROS 2 package that wraps the original ORB-SLAM2 system and the appliedAI ROS integration for modern ROS 2 distributions.  
 It provides **monocular**, **stereo**, and **RGB-D** SLAM nodes that estimate camera pose and publish a sparse 3D map.
@@ -83,7 +83,7 @@ Ensure dependencies such as OpenCV, Eigen3, and standard ROS 2 message packages 
 The node can be launched using the provided launch file with customizable parameters:
 
 ```bash
-ros2 launch orb_slam2_wrapper orb_slam2_d435_mono_launch.py
+ros2 launch orb_slam2_wrapper orb_slam2_mono_launch.py
 ```
 
 You can override default parameters via launch arguments:
@@ -98,6 +98,12 @@ After launching, you should see:
 - Map point cloud on `/orb_slam2_mono_node/map_points`.
 - Pose on `/orb_slam2_mono_node/pose`.
 - Debug image on `/orb_slam2_mono_node/debug_image`.
+
+
+The image below illustrates the operation of ORB-SLAM integrated with the AirSim simulation environment in car mode. ORB-SLAM processes the front-camera feed from the simulated vehicle to extract ORB features, track them across frames, and estimate the camera pose in real time. As the vehicle moves through the virtual world, the system constructs a consistent sparse 3D map while simultaneously localizing itself within it. This setup allows rapid testing and validation of SLAM algorithms in a controlled, photorealistic simulation without the need for real-world sensors or hardware
+
+<img width="1846" height="1014" alt="image" src="https://github.com/user-attachments/assets/9c34c5ed-32ff-4b88-a4eb-715651151331" />
+
 
 ## Saving Maps (`.bin` and `.pcd`)
 
