@@ -13,8 +13,8 @@ def generate_launch_description():
     voc_file = LaunchConfiguration('voc_file')
 
     remappings = [
-        ('/camera/image_raw', '/airsim_node/Car1/camera_link/Scene'),
-        ('/camera/camera_info', '/airsim_node/Car1/camera_link/Scene/camera_info'),
+        ('/camera/image_raw', '/camera/image_raw'),
+        ('/camera/camera_info', '/camera/camera_info'),
     ]
 
     return LaunchDescription([
