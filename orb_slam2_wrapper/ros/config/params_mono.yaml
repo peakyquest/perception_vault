@@ -1,0 +1,25 @@
+orb_slam2_mono:
+  ros__parameters:
+    publish_pointcloud: true     # Whether to publish a 3D point cloud of the reconstructed scene
+    publish_pose: true           # Whether to publish the camera pose (position + orientation) as a ROS topic
+    localize_only: false         # If true, only localize in an existing map; if false, allow building/extending the map
+    reset_map: false             # If true at startup, clear any existing in-memory map and start fresh
+    # static parameters
+    load_map: false              # If true, load a previously saved map from 'map_file' on startup
+    map_file: map.bin            # File name used to load/save the serialized ORB-SLAM2 map
+    pointcloud_frame_id: world_enu   # Frame ID used for the published point cloud (e.g., global/world frame)
+    camera_frame_id: Car1/camera_link_body/static   # Frame ID of the input camera used for SLAM poses
+    min_num_kf_in_map: 5         # Minimum number of keyframes required before treating the map as valid
+    # ORB parameters (optimized for better keypoint detection)
+    # Increased features for better tracking
+    ORBextractor/nFeatures: 5000     # Number of ORB features to extract per frame (higher = denser features, more CPU)
+    ORBextractor/scaleFactor: 1.2    # Scale factor between image pyramid levels (closer to 1.0 = more levels, more detail)
+    ORBextractor/nLevels: 8          # Number of pyramid levels used in the ORB feature extractor
+    # Lower thresholds for more sensitive feature detection
+    ORBextractor/iniThFAST: 8        # Initial FAST corner detection threshold (lower = more features, possibly more noise)
+    ORBextractor/minThFAST: 3        # Minimum FAST threshold if not enough corners found with 'iniThFAST'
+    # Camera parameters
+    # Match approximate frame rate of your camera
+    camera_fps: 20                   # Expected camera frame rate in Hz (used for internal timing/tuning)
+    # AirSim images are 'bgr8' → set false (0: BGR, 1: RGB)
+    camera_rgb_encoding: true        # Whether incoming images use RGB encoding (true = RGB, false = BGR)
