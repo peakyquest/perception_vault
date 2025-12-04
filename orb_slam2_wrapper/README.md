@@ -20,7 +20,6 @@ This wrapper keeps the same high‑level interfaces as the appliedAI ROS 1 node 
 |------|------------|-------------|
 | Input | `/camera/image_raw` | Monocular camera image stream (`sensor_msgs/msg/Image`) |
 | Input | `/camera/camera_info` | Camera intrinsics and distortion parameters (`sensor_msgs/msg/CameraInfo`) |
-| Service | `/orb_slam2_mono_node/save_map` | Service to save the current map as both `.bin` and `.pcd` files |
 | Output | `/orb_slam2_mono_node/map_points` | Sparse 3D map points published by ORB-SLAM2 (`sensor_msgs/msg/PointCloud2`) |
 | Output | `/orb_slam2_mono_node/pose` | Current camera pose in the map frame (`geometry_msgs/msg/PoseStamped`) |
 | Output | `/orb_slam2_mono_node/debug_image` | Debug image with tracked ORB features and status text (`sensor_msgs/msg/Image`) |
@@ -90,7 +89,7 @@ ros2 launch orb_slam2_wrapper orb_slam2_d435_mono_launch.py
 You can override default parameters via launch arguments:
 
 ```bash
-ros2 launch orb_slam2_wrapper orb_slam2_d435_mono_launch.py \
+ros2 launch orb_slam2_wrapper orb_slam2_mono_launch.py \
     params_file:=/path/to/params.yaml \
     voc_file:=/path/to/vocabulary.txt
 ```
