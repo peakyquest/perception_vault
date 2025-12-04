@@ -25,8 +25,16 @@
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
+#ifdef ROS_DISTRO_JAZZY
+#include <image_transport/image_transport.hpp>
+#else
 #include <image_transport/image_transport.h>
+#endif
+#ifdef ROS_DISTRO_JAZZY
+#include <cv_bridge/cv_bridge.hpp>
+#else
 #include <cv_bridge/cv_bridge.h>
+#endif
 #include <sensor_msgs/image_encodings.hpp>
 #include <opencv2/core/core.hpp>
 #include <tf2_ros/transform_broadcaster.h>

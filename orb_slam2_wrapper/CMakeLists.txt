@@ -20,6 +20,20 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
+
+# Detect ROS distro and define macros
+if(DEFINED ENV{ROS_DISTRO})
+  set(ROS_DISTRO $ENV{ROS_DISTRO})
+  message(STATUS "ROS_DISTRO detected: ${ROS_DISTRO}")
+  
+  if(ROS_DISTRO STREQUAL "jazzy")
+    add_compile_definitions(ROS_DISTRO_JAZZY)
+    message(STATUS "ROS_DISTRO_JAZZY macro defined")
+  endif()
+else()
+  message(WARNING "ROS_DISTRO environment variable not set")
+endif()
+
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)

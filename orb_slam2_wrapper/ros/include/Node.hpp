@@ -21,8 +21,16 @@
 #ifndef NODE_HPP_
 #define NODE_HPP_
 
+#ifdef ROS_DISTRO_JAZZY
+#include <image_transport/image_transport.hpp>
+#else
 #include <image_transport/image_transport.h>
+#endif
+#ifdef ROS_DISTRO_JAZZY
+#include <cv_bridge/cv_bridge.hpp>
+#else
 #include <cv_bridge/cv_bridge.h>
+#endif
 
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
@@ -48,7 +56,11 @@
 
 #include "tf2/convert.h"
 #include "tf2/LinearMath/Transform.h"
+#ifdef ROS_DISTRO_JAZZY
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+#else
 #include "tf2_geometry_msgs/tf2_geometry_msgs.h"
+#endif
 #include "tf2_ros/buffer.h"
 #include "tf2_ros/message_filter.h"
 #include "tf2_ros/transform_broadcaster.h"
