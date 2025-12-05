@@ -40,6 +40,7 @@ Node::Node(
   declare_parameter("publish_pointcloud", rclcpp::ParameterValue(true));
   declare_parameter("publish_pose", rclcpp::ParameterValue(true));
   declare_parameter("publish_tf", rclcpp::ParameterValue(true));
+  declare_parameter("publish_trajectory", rclcpp::ParameterValue(false));
   declare_parameter("pointcloud_frame_id", rclcpp::ParameterValue(std::string("map")));
   declare_parameter("camera_frame_id", rclcpp::ParameterValue(std::string("camera_link")));
   declare_parameter("map_file", rclcpp::ParameterValue(std::string("map.bin")));
@@ -64,6 +65,7 @@ void Node::init(const ORB_SLAM2::System::eSensor & sensor)
   get_parameter("publish_pointcloud", publish_pointcloud_param_);
   get_parameter("publish_pose", publish_pose_param_);
   get_parameter("publish_tf", publish_tf_param_);
+  get_parameter("publish_trajectory", publish_trajectory_param_);
   get_parameter("pointcloud_frame_id", map_frame_id_param_);
   get_parameter("camera_frame_id", camera_frame_id_param_);
   get_parameter("map_file", map_file_name_param_);
@@ -91,6 +93,12 @@ void Node::init(const ORB_SLAM2::System::eSensor & sensor)
   // Enable publishing camera's pose as PoseStamped message
   if (publish_pose_param_) {
     pose_publisher_ = create_publisher<geometry_msgs::msg::PoseStamped>(node_name_ + "/pose", 1);
+  }
+
+  // Enable publishing camera's trajectory as Path message
+  if (publish_trajectory_param_) {
+    trajectory_publisher_ = create_publisher<nav_msgs::msg::Path>(node_name_ + "/trajectory", 1);
+    trajectory_path_.header.frame_id = map_frame_id_param_;
   }
 
   camera_info_sub_ = create_subscription<sensor_msgs::msg::CameraInfo>(
@@ -127,6 +135,9 @@ void Node::Update()
     PublishPositionAsTransform(position);
     if (publish_pose_param_) {
       PublishPositionAsPoseStamped(position);
+    }
+    if (publish_trajectory_param_) {
+      PublishTrajectory(position);
     }
   }
 
@@ -165,6 +176,24 @@ void Node::PublishPositionAsPoseStamped(cv::Mat position)
   pose_publisher_->publish(pose_msg);
 }
 
+void Node::PublishTrajectory(cv::Mat position)
+{
+  tf2::Transform grasp_tf = TransformFromMat(position);
+  geometry_msgs::msg::PoseStamped pose_msg;
+  pose_msg.header.stamp = current_frame_time_;
+  pose_msg.header.frame_id = map_frame_id_param_;
+  tf2::toMsg(grasp_tf, pose_msg.pose);
+  
+  // Add the current pose to the trajectory
+  trajectory_path_.poses.push_back(pose_msg);
+  
+  // Update the header timestamp
+  trajectory_path_.header.stamp = current_frame_time_;
+  trajectory_path_.header.frame_id = map_frame_id_param_;
+  
+  // Publish the trajectory
+  trajectory_publisher_->publish(trajectory_path_);
+}
 
 void Node::PublishRenderedImage(cv::Mat image)
 {

@@ -38,6 +38,7 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(image_common REQUIRED)
 find_package(image_transport REQUIRED)
@@ -50,6 +51,7 @@ set(dependencies
   std_msgs
   sensor_msgs
   geometry_msgs
+  nav_msgs
   cv_bridge
   image_common
   image_transport

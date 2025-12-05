@@ -13,6 +13,7 @@ This wrapper keeps the same high‑level interfaces as the appliedAI ROS 1 node 
 - **ROS 2 compatibility**: The original `orb_slam_2_ros` targets ROS 1; this wrapper ports the nodes to ROS 2 (Humble, Jazzy) using `rclcpp`, ROS 2 parameters, and ROS 2 topics/services.
 - **Dual map saving**: When the `save_map` service is called, the map is saved both as a binary ORB-SLAM2 map (`map.bin`, in the current working directory) and as an ASCII PCD file (`map.pcd`, in `~/.ros`) that can be consumed by other tools.
 - **Consistent point cloud convention**: The exported `map.pcd` uses the same coordinate convention as the published `PointCloud2` map topic for easy downstream use.
+- **Trajectory publishing**: Optional camera trajectory publishing as a `nav_msgs/msg/Path` message that accumulates all camera poses over time, enabling trajectory visualization in RViz2 when the `publish_trajectory` parameter is enabled.
 
 ### Inputs / Outputs
 
@@ -22,6 +23,7 @@ This wrapper keeps the same high‑level interfaces as the appliedAI ROS 1 node 
 | Input | `/camera/camera_info` | Camera intrinsics and distortion parameters (`sensor_msgs/msg/CameraInfo`) |
 | Output | `/orb_slam2_mono_node/map_points` | Sparse 3D map points published by ORB-SLAM2 (`sensor_msgs/msg/PointCloud2`) |
 | Output | `/orb_slam2_mono_node/pose` | Current camera pose in the map frame (`geometry_msgs/msg/PoseStamped`) |
+| Output | `/orb_slam2_mono_node/trajectory` | Camera trajectory as a path (`nav_msgs/msg/Path`) - published when `publish_trajectory` is `true` |
 | Output | `/orb_slam2_mono_node/debug_image` | Debug image with tracked ORB features and status text (`sensor_msgs/msg/Image`) |
 | Output | TF (`map_frame_id` → `camera_frame_id`) | Transform from map frame to camera frame published via TF2 |
 
@@ -31,6 +33,7 @@ This wrapper keeps the same high‑level interfaces as the appliedAI ROS 1 node 
 |----------------|---------------|-------------|
 | `publish_pointcloud` | `true` | Publish 3D point cloud for the reconstructed map |
 | `publish_pose` | `true` | Publish camera pose as `PoseStamped` |
+| `publish_trajectory` | `false` | Publish camera trajectory as `Path` message (accumulates poses over time) |
 | `localize_only` | `false` | If `true`, only localize in an existing map (no new map points) |
 | `reset_map` | `false` | If `true` at startup, clear any existing map |
 | `load_map` | `false` | Load a previously saved map from `map_file` on startup |

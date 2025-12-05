@@ -46,6 +46,7 @@
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <geometry_msgs/msg/transform.hpp>
+#include <nav_msgs/msg/path.hpp>
 
 #include <vector>
 #include <string>
@@ -96,6 +97,7 @@ private:
   void PublishMapPoints(std::vector<ORB_SLAM2::MapPoint *> map_points);
   void PublishPositionAsTransform(cv::Mat position);
   void PublishPositionAsPoseStamped(cv::Mat position);
+  void PublishTrajectory(cv::Mat position);
   void PublishRenderedImage(cv::Mat image);
   void SaveMapSrv(
     const shared_ptr<rmw_request_id_t>/*request_header*/,
@@ -114,6 +116,7 @@ private:
   image_transport::Publisher rendered_image_publisher_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr map_points_publisher_;
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_publisher_;
+  rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr trajectory_publisher_;
   rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_sub_;
   rclcpp::Service<orb_slam2_wrapper::srv::SaveMap>::SharedPtr service_server_;
 
@@ -133,7 +136,11 @@ private:
   bool publish_pointcloud_param_;
   bool publish_tf_param_;
   bool publish_pose_param_;
+  bool publish_trajectory_param_;
   int min_observations_per_point_;
+  
+  // Trajectory storage
+  nav_msgs::msg::Path trajectory_path_;
 };
 
 #endif  // NODE_HPP_
