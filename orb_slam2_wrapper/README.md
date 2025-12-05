@@ -124,6 +124,15 @@ This will create:
 Both files can be reused for localization, analysis, or visualization in third‑party tools.
 
 ---
+
+## TODO
+
+- [ ] Create launch file for stereo camera
+- [ ] Create launch file for RGB-D camera
+- [ ] Test both launch files
+
+
+---
 ## NOTE
 
 If you use ORB-SLAM2 in academic work, please cite the original authors as described in the upstream ORB-SLAM2 repository.
