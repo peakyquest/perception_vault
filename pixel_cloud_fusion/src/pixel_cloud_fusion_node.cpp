@@ -57,7 +57,7 @@ public:
     this->declare_parameter<bool>("use_approximate_sync", true);
     this->declare_parameter<double>("max_range", 100.0);
     this->declare_parameter<std::string>("detections_topic", "/detections");
-    this->declare_parameter<std::string>("markers_topic", "/detection_bboxes_3d");
+    this->declare_parameter<std::string>("markers_topic", "/fusion/detections_markers");
     this->declare_parameter<bool>("enable_3d_bboxes", true);
     this->declare_parameter<double>("bbox_min_height", 0.2);
     this->declare_parameter<double>("bbox_outlier_percentile", 0.85);
