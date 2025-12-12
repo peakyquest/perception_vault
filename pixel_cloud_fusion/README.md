@@ -40,7 +40,7 @@ The fusion pipeline operates as follows:
 | `/camera/image_raw` | `sensor_msgs/msg/Image` | Raw camera image |
 | `/camera/camera_info` | `sensor_msgs/msg/CameraInfo` | Camera intrinsic parameters for projection |
 | `/lidar/points` | `sensor_msgs/msg/PointCloud2` | Input LiDAR pointcloud |
-| `/camera/yolo_detections` | `vision_msgs/msg/Detection2DArray` | 2D object detections from YOLO |
+| `/camera/yolo_detections` | `yolo_msgs/msg/Detection2DArray` | 2D object detections from YOLO |
 
 ---
 
