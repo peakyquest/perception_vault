@@ -1,32 +1,65 @@
 # **Perception Vault – Unified Sensor Intelligence for Autonomous Systems**
 
-**Perception Vault** is a comprehensive and extensible perception framework designed to handle the full spectrum of sensor data required in modern robotics and autonomous systems. As autonomous platforms continue to evolve—whether mobile robots, drones, industrial manipulators, or intelligent vehicles—the accuracy and robustness of their perception pipeline become the foundation upon which all decision-making, navigation, and interaction rely. This repository serves as the centralized hub that ingests, processes, fuses, and interprets raw sensor information from diverse modalities, ultimately transforming chaotic real-world signals into structured, meaningful insights. At its core, *Perception Vault* is built around the idea that no single sensor provides a complete understanding of the environment; each has strengths and limitations. Lidar offers precise geometric structure, cameras deliver rich visual texture, radar excels in harsh or dynamic environments, and IMU data provides high-frequency motion awareness. This repository unifies these sensor streams into a cohesive perception layer, ensuring resilience against noise, occlusion, lighting changes, fast motion, and other real-world complexities.The system incorporates modular processing pipelines for each sensor type—point cloud processing for lidar, image-based perception for RGB/depth cameras, radar signal interpretation for object detection and tracking, and inertial data handling for motion compensation and state estimation. Beyond isolated processing, *Perception Vault* emphasizes multi-sensor fusion, enabling complementary strengths across sensor modalities to collectively enhance situational awareness. The architecture is designed to support robotics platforms requiring high-performance perception capabilities, from simultaneous localization and mapping (SLAM) to real-time object detection, classification, tracking, and environmental understanding.Engineered with scalability and extensibility in mind, the repository is structured to support research, development, and production-grade deployment. Whether integrating with existing robotics frameworks, powering perception stacks for autonomous navigation, or enabling advanced environment modeling for AI-driven systems, *Perception Vault* provides the foundational building blocks needed for reliable, intelligent robotic perception.
+**Perception Vault** is a comprehensive and extensible perception framework designed to process the full spectrum of sensor data used in modern robotics and autonomous systems. As autonomous platforms continue to evolve—mobile robots, drones, industrial manipulators, autonomous vehicles—the accuracy and robustness of their perception layer remain the foundation for all navigation, mapping, and decision-making.
 
-## **Perception Vault Packages**
+This repository serves as a unified hub that ingests, processes, fuses, and interprets raw sensor information from diverse modalities, transforming noisy real-world signals into structured, meaningful insights.
 
-### **1. Camera RTSP Streamer**  
-The **Camera RTSP Streamer** module enables streaming of video feeds from cameras over RTSP within ROS2. It allows live camera data to be integrated directly into perception pipelines for monitoring, visualization, and downstream processing.
+At its core, *Perception Vault* embraces the principle that **no single sensor is enough**. Each type offers unique advantages:
 
-### **2. LiDAR PointCloud Filters**  
-The **LiDAR PointCloud Filters** module provides a collection of **PCL (Point Cloud Library) filters** for ROS2. It supports preprocessing of LiDAR point clouds, including noise removal, downsampling, and segmentation, enhancing the quality and efficiency of perception algorithms.  
+- LiDAR → geometric precision  
+- Cameras → rich visual texture  
+- Radar → robustness in harsh conditions  
+- IMU → high-frequency motion awareness  
 
-### **3. Navsat Pose Localizer**  
-The **Navsat Pose Localizer** module provides a transformation layer that converts **GPS latitude/longitude** data into ROS2 **nav_msgs/Odometry** for use in higher-level localization, mapping, and navigation systems.
+By combining these streams, the system delivers a resilient and complete understanding of the environment—capable of handling noise, occlusions, lighting variation, high-speed motion, and more.
 
-### **4. Lidar Euclidean Cluster**  
-The lidar_euclidean_cluster module uses PCL to perform Euclidean clustering on LiDAR point clouds, segmenting points into distinct object clusters
+The architecture includes modular processing pipelines for each sensor type, multi-sensor fusion blocks, and interfaces for higher-level perception tasks such as SLAM, object detection, 3D clustering, tracking, and environment modeling. Designed for extensibility, it supports research, development, and production deployment.
 
+---
 
-## **Third Party Packages**
+# **Perception Vault Packages**
 
-### **1. YOLO ROS2 Package**  
-The [YOLO ROS2](https://github.com/mgonzs13/yolo_ros) package developed by **Miguel González (mgonzs13)** provides ROS2 integration for YOLO object detection models ranging **from YOLOv8 to YOLOv12**. It supports real-time inference for robotics applications, offering fast and accurate detection that can be easily integrated into perception pipelines for drones, mobile robots, and autonomous systems.
+- **Camera RTSP Streamer**  
+  Streams camera feeds over RTSP into ROS2 for monitoring, visualization, and integration into perception pipelines.
 
-### **2. 3D LiDAR SLAM ROS2 Package**  
-The [lidarslam_ros2](https://github.com/rsasaki0109/lidarslam_ros2) package by **rsasaki0109** provides ROS 2 integration for 3D LiDAR-based SLAM, enabling real-time mapping and localization. It uses efficient scan-matching and graph-based optimization to build accurate 3D point-cloud maps and estimate robot pose, making it suitable for mobile robots, drones, and autonomous systems.
+- **LiDAR PointCloud Filters**  
+  A set of PCL-based filters for point cloud preprocessing (downsampling, noise filtering, segmentation), improving performance and accuracy of downstream algorithms.
 
-## **Bag Files (Dataset & Playback Support)** 
-This section provides curated ROS2 bag file links that can be used to test, validate, and benchmark the **Perception Vault** and **third party** modules under different real-world and simulated conditions. These bags support rapid experimentation without requiring live sensor hardware.
+- **Navsat Pose Localizer**  
+  Converts raw GPS latitude/longitude into ROS2 `nav_msgs/Odometry`, enabling integration into mapping and navigation frameworks.
 
-- [Autoware ROS2 Bag Files](https://autowarefoundation.github.io/autoware-documentation/main/datasets/)
-- [KITTI Publisher ROS2](https://github.com/umtclskn/ros2_kitti_publishers)
+- **Lidar Euclidean Cluster**  
+  Uses PCL’s Euclidean clustering to segment raw LiDAR point clouds into distinct object-level clusters.
+
+- **Camera Image Processing**  
+  Provides essential image preprocessing operations such as undistortion, resizing, ROI extraction, and enhancement. Prepares images for tasks like SLAM, detection, and pixel-to-pointcloud fusion.
+
+- **ORB-SLAM2 Wrapper**  
+  ROS2 wrapper for ORB-SLAM2, enabling real-time visual SLAM (pose estimation, mapping, relocalization) from monocular, stereo, or RGB-D cameras.
+
+- **Pixel Cloud Fusion**  
+  Performs 2D–3D sensor fusion by projecting camera detections (e.g., YOLO bounding boxes) onto LiDAR point clouds. Outputs 3D clusters corresponding to detected objects—ideal for tracking and semantic understanding.
+
+---
+
+# **Third-Party Integrated Packages**
+
+- **YOLO ROS2 Package**  
+  The [YOLO ROS2](https://github.com/mgonzs13/yolo_ros) package by *mgonzs13* integrates YOLOv8–YOLOv12 into ROS2 for real-time object detection suitable for mobile robots and autonomous systems.
+
+- **3D LiDAR SLAM ROS2 Package**  
+  The [lidarslam_ros2](https://github.com/rsasaki0109/lidarslam_ros2) package by *rsasaki0109* provides efficient scan-matching and graph-based SLAM to build accurate 3D maps and estimate robot pose in real time.
+
+---
+
+# **Bag Files (Dataset & Playback Support)**
+
+This section provides curated ROS2 bag files to test and benchmark Perception Vault modules without requiring live hardware.
+
+- **Autoware ROS2 Bag Files**  
+  https://autowarefoundation.github.io/autoware-documentation/main/datasets/
+
+- **KITTI Publisher ROS2**  
+  https://github.com/umtclskn/ros2_kitti_publishers
+
+---
