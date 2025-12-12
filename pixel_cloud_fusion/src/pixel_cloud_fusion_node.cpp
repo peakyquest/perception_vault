@@ -50,7 +50,7 @@ public:
     this->declare_parameter<std::string>("image_topic", "/image_rect");
     this->declare_parameter<std::string>("pointcloud_topic", "/points/raw");
     this->declare_parameter<std::string>("camera_info_topic", "/camera/camera_info");
-    this->declare_parameter<std::string>("output_topic", "/points/colored");
+    this->declare_parameter<std::string>("output_topic", "/fusion/points_projected");
     this->declare_parameter<std::string>("camera_frame", "camera_frame");
     this->declare_parameter<std::string>("lidar_frame", "lidar_frame");
     this->declare_parameter<int>("queue_size", 10);
