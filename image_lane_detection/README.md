@@ -1,4 +1,4 @@
-# Image Lane Detection Package
+# Image Lane Detection
 
 ## Introduction
 
