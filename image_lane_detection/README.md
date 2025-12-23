@@ -150,6 +150,12 @@ image_lane_detection/
 └── README.md
 ```
 
+
+## Rviz Visualization
+
+<img width="1203" height="781" alt="Screenshot from 2025-12-23 23-20-34" src="https://github.com/user-attachments/assets/5fae3175-0c04-4ac4-be8e-76f276d65c0d" />
+
+
 ## Notes
 
 - Video files must be placed in the `resources/` folder of the package
