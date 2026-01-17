@@ -29,6 +29,19 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
+# Detect ROS distro and define macros
+if(DEFINED ENV{ROS_DISTRO})
+  set(ROS_DISTRO $ENV{ROS_DISTRO})
+  message(STATUS "ROS_DISTRO detected: ${ROS_DISTRO}")
+  
+  if(ROS_DISTRO STREQUAL "jazzy")
+    add_compile_definitions(ROS_DISTRO_JAZZY)
+    message(STATUS "ROS_DISTRO_JAZZY macro defined")
+  endif()
+else()
+  message(WARNING "ROS_DISTRO environment variable not set")
+endif()
+
 find_package(rclcpp REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -52,7 +65,9 @@ ament_target_dependencies(
 )
 
 target_link_libraries(image_rectifier
-  ${OpenCV_LIBS})
+  cv_bridge::cv_bridge
+  ${OpenCV_LIBS}
+)
 
 install(TARGETS image_rectifier
   DESTINATION lib/${PROJECT_NAME})

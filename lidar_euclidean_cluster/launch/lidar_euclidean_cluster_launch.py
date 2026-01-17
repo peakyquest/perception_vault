@@ -16,13 +16,13 @@ def generate_launch_description():
                 'marker_topic': '/cluster_markers',
                 
                 # Clustering parameters
-                'cluster_tolerance': 0.5,
-                'min_cluster_size': 30,
-                'max_cluster_size': 5000,
+                'cluster_tolerance': 0.6,  # Balanced: prevents merging while keeping clusters (distance threshold in meters)
+                'min_cluster_size': 30,  # Reduced from 30 to allow smaller valid clusters
+                'max_cluster_size': 2000,
                 
                 # Visualization and debugging
                 'publish_markers': True,
-                'verbose_': False,
+                'verbose': True,  # Enable verbose for debugging
             }],
         ),
     ])

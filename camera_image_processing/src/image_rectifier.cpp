@@ -1,8 +1,16 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/image.hpp"
 #include "sensor_msgs/msg/camera_info.hpp"
+#ifdef ROS_DISTRO_JAZZY
+#include "cv_bridge/cv_bridge.hpp"
+#else
 #include "cv_bridge/cv_bridge.h"
+#endif
+#ifdef ROS_DISTRO_JAZZY
 #include "image_transport/image_transport.hpp"
+#else
+#include "image_transport/image_transport.h"
+#endif
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/calib3d/calib3d.hpp>

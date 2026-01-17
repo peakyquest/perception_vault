@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>lidar_rule_based_classifier</name>
+  <version>0.0.0</version>
+  <description>ROS2 C++ node for rule-based classification of LiDAR point cloud clusters into object types (person, car) using geometric and statistical features.</description>
+  <maintainer email="haroon300@hotmail.com">Haroon Rasheed</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>pcl_conversions</depend>
+  <depend>PCL</depend>
+  <depend>eigen3_cmake_module</depend>
+  <depend>libeigen3-dev</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

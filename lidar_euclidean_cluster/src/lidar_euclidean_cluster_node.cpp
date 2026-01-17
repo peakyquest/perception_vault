@@ -9,6 +9,7 @@
 #include <pcl/segmentation/extract_clusters.h>
 #include <pcl/filters/extract_indices.h>
 #include <pcl/common/common.h>
+#include <geometry_msgs/msg/point.hpp>
 
 using std::placeholders::_1;
 
@@ -60,10 +61,65 @@ public:
 
 private:
 
+  // Helper function to create wireframe bounding box marker
+  visualization_msgs::msg::Marker createBoundingBoxMarker(
+    const pcl::PointXYZ& min_pt, const pcl::PointXYZ& max_pt,
+    const std::string& frame_id, const builtin_interfaces::msg::Time& stamp, int cluster_id)
+  {
+    visualization_msgs::msg::Marker bbox_marker;
+    bbox_marker.header.frame_id = frame_id;
+    bbox_marker.header.stamp = stamp;
+    bbox_marker.ns = "cluster_bboxes";
+    bbox_marker.id = cluster_id;
+    bbox_marker.type = visualization_msgs::msg::Marker::LINE_LIST;
+    bbox_marker.action = visualization_msgs::msg::Marker::ADD;
+    bbox_marker.pose.orientation.w = 1.0;
+    bbox_marker.scale.x = 0.05;  // Line width
+    bbox_marker.color.r = 0.0;
+    bbox_marker.color.g = 1.0;
+    bbox_marker.color.b = 0.0;
+    bbox_marker.color.a = 1.0;
+
+    // Define the 8 vertices of the bounding box
+    geometry_msgs::msg::Point vertices[8];
+    vertices[0].x = min_pt.x; vertices[0].y = min_pt.y; vertices[0].z = min_pt.z;  // min-min-min
+    vertices[1].x = max_pt.x; vertices[1].y = min_pt.y; vertices[1].z = min_pt.z;  // max-min-min
+    vertices[2].x = max_pt.x; vertices[2].y = max_pt.y; vertices[2].z = min_pt.z;  // max-max-min
+    vertices[3].x = min_pt.x; vertices[3].y = max_pt.y; vertices[3].z = min_pt.z;  // min-max-min
+    vertices[4].x = min_pt.x; vertices[4].y = min_pt.y; vertices[4].z = max_pt.z;  // min-min-max
+    vertices[5].x = max_pt.x; vertices[5].y = min_pt.y; vertices[5].z = max_pt.z;  // max-min-max
+    vertices[6].x = max_pt.x; vertices[6].y = max_pt.y; vertices[6].z = max_pt.z;  // max-max-max
+    vertices[7].x = min_pt.x; vertices[7].y = max_pt.y; vertices[7].z = max_pt.z;  // min-max-max
+
+    // Draw 12 edges of the box (each edge connects two vertices)
+    // Bottom face (z = min)
+    bbox_marker.points.push_back(vertices[0]); bbox_marker.points.push_back(vertices[1]);  // edge 0-1
+    bbox_marker.points.push_back(vertices[1]); bbox_marker.points.push_back(vertices[2]);  // edge 1-2
+    bbox_marker.points.push_back(vertices[2]); bbox_marker.points.push_back(vertices[3]);  // edge 2-3
+    bbox_marker.points.push_back(vertices[3]); bbox_marker.points.push_back(vertices[0]);  // edge 3-0
+    // Top face (z = max)
+    bbox_marker.points.push_back(vertices[4]); bbox_marker.points.push_back(vertices[5]);  // edge 4-5
+    bbox_marker.points.push_back(vertices[5]); bbox_marker.points.push_back(vertices[6]);  // edge 5-6
+    bbox_marker.points.push_back(vertices[6]); bbox_marker.points.push_back(vertices[7]);  // edge 6-7
+    bbox_marker.points.push_back(vertices[7]); bbox_marker.points.push_back(vertices[4]);  // edge 7-4
+    // Vertical edges connecting bottom to top
+    bbox_marker.points.push_back(vertices[0]); bbox_marker.points.push_back(vertices[4]);  // edge 0-4
+    bbox_marker.points.push_back(vertices[1]); bbox_marker.points.push_back(vertices[5]);  // edge 1-5
+    bbox_marker.points.push_back(vertices[2]); bbox_marker.points.push_back(vertices[6]);  // edge 2-6
+    bbox_marker.points.push_back(vertices[3]); bbox_marker.points.push_back(vertices[7]);  // edge 3-7
+
+    return bbox_marker;
+  }
+
   void pointCloudCallback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
   {
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(*msg, *cloud);
+
+    if (verbose_)
+    {
+      RCLCPP_DEBUG(this->get_logger(), "Received cloud with %ld points", cloud->points.size());
+    }
 
     if (cloud->empty())
     {
@@ -192,25 +248,9 @@ private:
         center_marker.color.a = 0.8;
         marker_array.markers.push_back(center_marker);
 
-        // Add marker for bounding box
-        visualization_msgs::msg::Marker bbox_marker;
-        bbox_marker.header.frame_id = msg->header.frame_id;
-        bbox_marker.header.stamp = msg->header.stamp;
-        bbox_marker.ns = "cluster_bboxes";
-        bbox_marker.id = cluster_id;
-        bbox_marker.type = visualization_msgs::msg::Marker::CUBE;
-        bbox_marker.action = visualization_msgs::msg::Marker::ADD;
-        bbox_marker.pose.position.x = (min_pt.x + max_pt.x) / 2.0;
-        bbox_marker.pose.position.y = (min_pt.y + max_pt.y) / 2.0;
-        bbox_marker.pose.position.z = (min_pt.z + max_pt.z) / 2.0;
-        bbox_marker.pose.orientation.w = 1.0;
-        bbox_marker.scale.x = max_pt.x - min_pt.x;
-        bbox_marker.scale.y = max_pt.y - min_pt.y;
-        bbox_marker.scale.z = max_pt.z - min_pt.z;
-        bbox_marker.color.r = 0.0;
-        bbox_marker.color.g = 1.0;
-        bbox_marker.color.b = 0.0;
-        bbox_marker.color.a = 0.2;
+        // Add wireframe bounding box marker (LINE_LIST)
+        visualization_msgs::msg::Marker bbox_marker = createBoundingBoxMarker(
+          min_pt, max_pt, msg->header.frame_id, msg->header.stamp, cluster_id);
         marker_array.markers.push_back(bbox_marker);
       }
 
@@ -229,6 +269,12 @@ private:
     pcl::toROSMsg(*clustered_cloud, output);
     output.header = msg->header;
     pub_->publish(output);
+    
+    if (verbose_)
+    {
+      RCLCPP_DEBUG(this->get_logger(), "Published clustered cloud with %ld points to %s",
+                  clustered_cloud->points.size(), output_topic_.c_str());
+    }
 
     // Publish visualization markers
     if (publish_markers_ && marker_pub_)
